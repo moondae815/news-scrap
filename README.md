@@ -64,3 +64,43 @@ npm run build
 # 프로덕션 서버 실행
 npm run start
 ```
+
+## 🐳 Docker 배포
+
+이 프로젝트는 빌드 시점에 `OPENAI_API_KEY`가 필요합니다. 따라서 Docker 빌드에도 동일한 키를 전달해야 합니다.
+
+### 1) Docker 이미지 빌드 + 실행
+
+```bash
+# 빌드 (빌드 시점 키 주입)
+docker build \
+  --build-arg OPENAI_API_KEY=$OPENAI_API_KEY \
+  -t news-scrap:latest .
+
+# 실행 (런타임 키 주입)
+docker run -d \
+  --name news-scrap \
+  -p 3000:3000 \
+  -e OPENAI_API_KEY=$OPENAI_API_KEY \
+  news-scrap:latest
+```
+
+### 2) Docker Compose 실행
+
+프로젝트 루트에 `.env` 파일을 만들고 아래 값을 설정하세요.
+
+```bash
+OPENAI_API_KEY=sk-your-openai-api-key-here
+```
+
+그 다음 실행합니다.
+
+```bash
+docker compose up --build -d
+```
+
+중지/정리:
+
+```bash
+docker compose down
+```
